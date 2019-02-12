@@ -1,0 +1,142 @@
+<p class="mt-2 text-center">
+  <b>Desenvolvido por:</b> Gabriel Santos
+</p>
+<hr />
+
+<div class="container mt-2">
+  <div>
+    <button type="button" class="btn btn-success mb-2"
+            (click)="novaPessoa(template)">
+      <i class="fa fa-plus-circle"></i>
+      Criar Novo
+    </button>
+
+    <table class="table table-striped">
+      <thead class="thead-dark">
+        <tr>
+          <th>#</th>
+          <th>Nome</th>
+          <th>Email</th>
+          <th>Telefone</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let pessoa of pessoas">
+          <td>{{pessoa.id}}</td>
+          <td>{{pessoa.nome}}</td>
+          <td>{{pessoa.email}}</td>
+          <td>{{pessoa.telefone}}</td>
+          <td>
+            <div class="btn-group">
+              <button class="btn btn-sm btn-warning"
+                      tooltip="Editar"
+                      (click)="editarPessoa(pessoa, template)">
+                <i class="fa fa-edit"></i>
+              </button>
+              <button class="btn btn-sm btn-danger"
+                      tooltip="Deletar"
+                      (click)="excluirPessoa(pessoa, confirm)">
+                <i class="fa fa-eraser"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div bsModal #template="bs-modal" class="modal fade" tabindex="-1"
+     role="dialog" aria-labelledby="dialog-sizes-name1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 id="dialog-sizes-name1" class="modal-title pull-left">Pessoa</h4>
+        <button type="button" class="close pull-right" (click)="template.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="registerForm">
+          <div class="form-row">
+            <div class="form-group col-md-4">
+              <label>Nome</label>
+              <input type="text" class="form-control"
+                     [ngClass]="{'is-invalid': registerForm.get('nome').errors && registerForm.get('nome').touched}"
+                     formControlName="nome" placeholder="Insira um Nome" />
+              <div *ngIf="registerForm.get('nome').hasError('required') && registerForm.get('nome').touched" class="invalid-feedback">
+                O Nome é Obrigatório.
+              </div>
+              <div *ngIf="registerForm.get('nome').hasError('minlength') && registerForm.get('nome').touched" class="invalid-feedback">
+                No Mínimo 4 Caracteres
+              </div>
+              <div *ngIf="registerForm.get('nome').hasError('maxlength') && registerForm.get('nome').touched" class="invalid-feedback">
+                No Máximo 50 Caracteres
+              </div>
+            </div>
+            <div class="form-group col-md-4">
+              <label>Email</label>
+              <input type="email" class="form-control"
+                     [ngClass]="{'is-invalid': registerForm.get('email').errors && registerForm.get('email').touched}"
+                     formControlName="email" placeholder="Email" />
+              <div *ngIf="registerForm.get('email').hasError('required') && registerForm.get('email').touched" class="invalid-feedback">
+                O Email é Obrigatório.
+              </div>
+              <div *ngIf="registerForm.get('email').hasError('email') && registerForm.get('email').touched" class="invalid-feedback">
+                Insira um Email Válido.
+              </div>
+            </div>
+            <div class="form-group col-md-4">
+              <label>Telefone</label>
+              <input type="tel" class="form-control"
+                     [ngClass]="{'is-invalid': registerForm.get('telefone').errors && registerForm.get('telefone').touched}"
+                     formControlName="telefone" placeholder="Telefone" />
+              <div *ngIf="registerForm.get('telefone').hasError('required') && registerForm.get('telefone').touched" class="invalid-feedback">
+                O Telefone é Obrigatório.
+              </div>
+              <div *ngIf="registerForm.get('telefone').hasError('max') && registerForm.get('telefone').touched" class="invalid-feedback">
+                Insira um Telefone Válido.
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer d-flex">
+        <button class="btn btn-info" (click)="template.hide()">
+          Retornar
+        </button>
+        <button class="btn btn-success ml-auto" [disabled]="!registerForm.valid" (click)="salvarAlteracao(template)">
+          Salvar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div bsModal #confirm="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="dialog-sizes-name1">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title pull-left">
+          Deletando Pessoa
+        </h4>
+        <button type="button" class="close pull-right" (click)="confirm.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Tem Certeza que deseja Deletar?</p>
+        <p>{{bodyDeletarPessoa}}</p>
+      </div>
+      <div class="modal-footer btn-group d-flex">
+        <button type="button" class="btn btn-outline-primary" (click)="confirm.hide()">
+          CENCELAR
+        </button>
+        <button type="button" class="btn btn-outline-danger" (click)="confirmeDelete(confirm)">
+          DELETAR
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
