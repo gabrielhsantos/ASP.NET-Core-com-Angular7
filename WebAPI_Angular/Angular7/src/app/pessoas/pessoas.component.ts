@@ -1,10 +1,8 @@
-import { Component, OnInit, TemplateRef } from '@angular/core';
+import { Component, OnInit} from '@angular/core';
 import { Pessoa } from '../_models/Pessoa';
-import { BsModalService } from 'ngx-bootstrap';
-import { FormGroup, Validators, FormBuilder, FormControl } from '@angular/forms';
-import { template } from '@angular/core/src/render3';
+import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { PessoaService } from '../_services/pessoa.service';
-import { concat } from 'rxjs';
+
 
 @Component({
   selector: 'app-pessoas',
@@ -65,6 +63,7 @@ export class PessoasComponent implements OnInit {
     this.pessoaService.getAllPessoa().subscribe(
       (_pessoas: Pessoa[]) => {
         this.pessoas = _pessoas;
+        this.pessoasFiltradas = _pessoas;
         console.log(_pessoas);
       }, error => {
         console.log(error);

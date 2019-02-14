@@ -21,7 +21,6 @@
       Criar Novo
     </button>
   </div>
-
   <div>
     <table class="table table-striped">
       <thead class="thead-dark">
@@ -34,7 +33,7 @@
         </tr>
       </thead>
       <tbody *ngIf="pessoas && pessoas.length">
-        <tr *ngFor="let pessoa of pessoas">
+        <tr *ngFor="let pessoa of pessoasFiltradas">
           <td>{{pessoa.id}}</td>
           <td>{{pessoa.nome}}</td>
           <td>{{pessoa.email}}</td>
@@ -59,7 +58,7 @@
         <tr>
           <td colspan="7" class="text-center">
             <h4>
-              Nenhuma pessoa encontrada!
+              Nenhuma Pessoa Inserida!
             </h4>
           </td>
         </tr>

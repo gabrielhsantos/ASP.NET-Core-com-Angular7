@@ -44,6 +44,7 @@ var PessoasComponent = /** @class */ (function () {
         var _this = this;
         this.pessoaService.getAllPessoa().subscribe(function (_pessoas) {
             _this.pessoas = _pessoas;
+            _this.pessoasFiltradas = _pessoas;
             console.log(_pessoas);
         }, function (error) {
             console.log(error);
