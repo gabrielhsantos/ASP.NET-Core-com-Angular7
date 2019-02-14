@@ -1,6 +1,6 @@
 import { Component, OnInit, TemplateRef } from '@angular/core';
 import { Pessoa } from '../_models/Pessoa';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap';
+import { BsModalService } from 'ngx-bootstrap';
 import { FormGroup, Validators, FormBuilder, FormControl } from '@angular/forms';
 import { template } from '@angular/core/src/render3';
 import { PessoaService } from '../_services/pessoa.service';
@@ -12,11 +12,31 @@ import { concat } from 'rxjs';
   styles: []
 })
 export class PessoasComponent implements OnInit {
+  pessoasFiltradas: Pessoa[];
   pessoa: Pessoa;
   pessoas: Pessoa[];
+
   registerForm: FormGroup;
   modoSalvar = 'post';
   bodyDeletarPessoa = '';
+
+  _filtroLista = '';
+
+  get filtroLista(): string {
+    return this._filtroLista;
+  }
+
+  set filtroLista(value: string) {
+    this._filtroLista = value;
+    this.pessoasFiltradas = this.filtroLista ? this.filtrarPessoas(this.filtroLista) : this.pessoas;
+  }
+
+  filtrarPessoas(filtrarPor: string): Pessoa[] {
+    filtrarPor = filtrarPor.toLocaleLowerCase();
+    return this.pessoas.filter(
+      pessoa => pessoa.nome.toLocaleLowerCase().indexOf(filtrarPor) !== -1
+    );
+  }
 
   openModal(template: any) {
     this.registerForm.reset();
@@ -33,7 +53,6 @@ export class PessoasComponent implements OnInit {
 
   constructor(
     private pessoaService: PessoaService,
-    private modalService: BsModalService,
     private fb: FormBuilder,
   ) { }
 

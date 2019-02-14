@@ -1,15 +1,30 @@
 import * as tslib_1 from "tslib";
 import { Component } from '@angular/core';
-import { BsModalService } from 'ngx-bootstrap';
 import { Validators, FormBuilder } from '@angular/forms';
 import { PessoaService } from '../_services/pessoa.service';
 var PessoasComponent = /** @class */ (function () {
-    function PessoasComponent(pessoaService, modalService, fb) {
+    function PessoasComponent(pessoaService, fb) {
         this.pessoaService = pessoaService;
-        this.modalService = modalService;
         this.fb = fb;
-        this.baseURL = 'https://localhost:44383/api/Pessoas';
+        this.modoSalvar = 'post';
+        this.bodyDeletarPessoa = '';
+        this._filtroLista = '';
     }
+    Object.defineProperty(PessoasComponent.prototype, "filtroLista", {
+        get: function () {
+            return this._filtroLista;
+        },
+        set: function (value) {
+            this._filtroLista = value;
+            this.pessoasFiltradas = this.filtroLista ? this.filtrarPessoas(this.filtroLista) : this.pessoas;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    PessoasComponent.prototype.filtrarPessoas = function (filtrarPor) {
+        filtrarPor = filtrarPor.toLocaleLowerCase();
+        return this.pessoas.filter(function (pessoa) { return pessoa.nome.toLocaleLowerCase().indexOf(filtrarPor) !== -1; });
+    };
     PessoasComponent.prototype.openModal = function (template) {
         this.registerForm.reset();
         template.show();
@@ -20,8 +35,6 @@ var PessoasComponent = /** @class */ (function () {
             email: ['', [Validators.required, Validators.email]],
             telefone: ['', [Validators.required, Validators.maxLength(16)]]
         });
-    };
-    PessoasComponent.prototype.salvarAlteracao = function () {
     };
     PessoasComponent.prototype.ngOnInit = function () {
         this.validation();
@@ -36,6 +49,55 @@ var PessoasComponent = /** @class */ (function () {
             console.log(error);
         });
     };
+    PessoasComponent.prototype.novaPessoa = function (template) {
+        this.modoSalvar = 'post';
+        this.openModal(template);
+    };
+    PessoasComponent.prototype.editarPessoa = function (pessoa, template) {
+        this.modoSalvar = 'put';
+        this.openModal(template);
+        this.pessoa = pessoa;
+        this.registerForm.patchValue(pessoa);
+    };
+    PessoasComponent.prototype.salvarAlteracao = function (template) {
+        var _this = this;
+        if (this.registerForm.valid) {
+            if (this.modoSalvar === 'post') {
+                this.pessoa = Object.assign({}, this.registerForm.value);
+                this.pessoaService.postPessoa(this.pessoa).subscribe(function (novaPessoa) {
+                    console.log(novaPessoa);
+                    template.hide();
+                    _this.getPessoas();
+                }, function (error) {
+                    console.log(error);
+                });
+            }
+            else {
+                this.pessoa = Object.assign({ id: this.pessoa.id }, this.registerForm.value);
+                this.pessoaService.putPessoa(this.pessoa).subscribe(function (novaPessoa) {
+                    console.log(novaPessoa);
+                    template.hide();
+                    _this.getPessoas();
+                }, function (error) {
+                    console.log(error);
+                });
+            }
+        }
+    };
+    PessoasComponent.prototype.excluirPessoa = function (pessoa, template) {
+        this.openModal(template);
+        this.pessoa = pessoa;
+        this.bodyDeletarPessoa = "ID: " + pessoa.id + " - " + pessoa.nome;
+    };
+    PessoasComponent.prototype.confirmeDelete = function (template) {
+        var _this = this;
+        this.pessoaService.deletePessoa(this.pessoa.id).subscribe(function () {
+            template.hide();
+            _this.getPessoas();
+        }, function (error) {
+            console.log(error);
+        });
+    };
     PessoasComponent = tslib_1.__decorate([
         Component({
             selector: 'app-pessoas',
@@ -43,7 +105,6 @@ var PessoasComponent = /** @class */ (function () {
             styles: []
         }),
         tslib_1.__metadata("design:paramtypes", [PessoaService,
-            BsModalService,
             FormBuilder])
     ], PessoasComponent);
     return PessoasComponent;

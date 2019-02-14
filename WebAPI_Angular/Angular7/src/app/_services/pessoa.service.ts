@@ -19,6 +19,10 @@ export class PessoaService {
     return this.http.get<Pessoa>(`${this.baseURL}/${id}`);
   }
 
+  getPessoaByNome(nome: string): Observable<Pessoa[]> {
+    return this.http.get<Pessoa[]>(`${this.baseURL}/getByNome/${nome}`);
+  }
+
   postPessoa(pessoa: Pessoa){
     return this.http.post(this.baseURL, pessoa);
   }

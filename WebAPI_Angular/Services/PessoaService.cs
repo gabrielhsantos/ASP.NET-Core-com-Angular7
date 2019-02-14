@@ -33,6 +33,11 @@ namespace WebAPI_Angular.Services
            return _context.Pessoas.FirstOrDefault(p => p.Id == id);            
         }
 
+        public Pessoa[] FindByNome(string nome)
+        {
+            return _context.Pessoas.AsNoTracking().Where(p => p.Nome.ToLower().Contains(nome.ToLower())).ToArray();
+        }
+
         public void Update(Pessoa pessoa)
         {
             bool hasAny = _context.Pessoas.Any(p => p.Id == pessoa.Id);

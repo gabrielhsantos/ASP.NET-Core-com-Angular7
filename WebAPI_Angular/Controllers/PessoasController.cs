@@ -44,6 +44,16 @@ namespace WebAPI_Angular.Controllers
             return Ok(person);
         }
 
+        [HttpGet("getByNome/{nome}")]
+        public IActionResult Get(string nome)
+        {
+
+            var person = _pessoaService.FindByNome(nome);
+
+            return Ok(person);
+
+        }
+
         [HttpPost]
         public IActionResult Post([FromBody] Pessoa pessoa)
         {
